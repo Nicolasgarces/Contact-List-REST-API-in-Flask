@@ -18,25 +18,15 @@ def handle_hello():
     return jsonify(response_body), 200
 
 
-@api.route('/contact/all', methods=['GET'])
+@api.route('/contact/all', methods=['GET']) # 1) Obtenga una lista de todos los contactos GET /contact/all
 def get_contacts():
-
     data = Contact.query.filter().all()
     all_contacts = list( map(lambda item: item.serialize(), data) )
     print(all_contacts)
-    
     return jsonify(all_contacts), 200
-#---------------------------------------------------------------------------
-# @api.route('/contact', methods=['POST'])
-# def create_contact():
-#     body = request.get_json()
-#     db.session.add(body)
-#     db.session.commit()
-#     print(body)
-#     return jsonify(body), 200
-#--------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------
 
-@api.route('/contact', methods=['POST'])
+@api.route('/contact', methods=['POST']) # 2) Crear un nuevo Contacto POST /contact
 def create_contact():
     id = request.json.get('id')
     name = request.json.get('full_name')
@@ -55,46 +45,23 @@ def create_contact():
     db.session.commit()
     
     return jsonify(contact.serialize()), 201
+ #---------------------------------------------------------------------------------------------------------------------------------   
+
+@api.route('/contact/<int:id>', methods=['GET']) # 3) Obtener un Contacto específico (con los objetos del grupo al que pertenece) GET /contact/{contact_id}
+def get_contact(id):    
+    contact = Contact.query.get(id)  
+    print(contact)  
+    return jsonify(contact.serialize()), 200
+#--------------------------------------------------------------------------------------------------------------------------------
+
+@api.route('/contact/<int:id>', methods=['DELETE']) # 4) Eliminar un Contacto DELETE /contact/{contact_id}
+def delete_contact(id):
+    contact = Contact.query.get(id)
+    db.session.delete(contact)
+    db.session.commit()
+    return jsonify({}), 200
 
 
 
 
 
-
-
-
-
-
-
-#-----------------------------------------------------------------------------------
-# @app.route('/members', methods=['POST'])
-# def add_new_member():
-#     body = request.get_json()
-    
-#     member = {
-#        "id": jackson_family._generateId(),
-#         "first_name": body["first_name"],
-#         "last_name": jackson_family.last_name,
-#         "age": body["age"],
-#         "lucky_numbers": body["lucky_numbers"]
-#     }
-#     result = jackson_family.add_member(member)
-#     return jsonify(result), 200
-
-# @app.route('/contacts', methods=['POST'])
-# def create_contact():
-#     name = request.json.get('name')    
-#     email = request.json.get('email')
-#     phone = request.json.get('phone')"""
-#     data = request.get_json()
-#     name = data['name']
-#     email = data['email']
-#     phone = data['phone']
-#      """
-#     contact = Contact()
-#     contact.name = name
-#     contact.email = email
-#     contact.phone = phone
-#     db.session.add(contact)
-#     db.session.commit()
-#     return jsonify(contact.serialize()), 201
