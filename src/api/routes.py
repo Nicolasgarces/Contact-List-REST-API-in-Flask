@@ -62,14 +62,19 @@ def delete_contact(id):
     return jsonify({}), 200
 #-----------------------------------------------------------------------------------------------------------------------------------
 # 5) Update a Contact UPDATE /contact/{contact_id} FALTA!!!!!!
-@api.route('/contact/<int:id>', methods=['PUT']) 
-def update_contact(id):    
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
+@api.route('/contact/<int:contact_id>', methods=['PUT'])
+def update_contact(contact_id):
+    body = request.get_json()
+    contact = Contact.query.get(contact_id)
+    contact.address = body['address']
+    contact.email = body['email']
+    contact.full_name = body['full_name']
+    contact.phone = body['phone']
+    db.session.commit()
+    print(contact)
+    return jsonify ("the contact has been updated"), 200
 
-    return jsonify(response_body), 200
-    # return jsonify(contact.serialize()), 200
+    
 
 #-------------------------------------------------------------------------------------------------------------------------------------
 # 6) Get a list of all the Group names and ids GET /group/all
@@ -105,13 +110,15 @@ def get_group(id):
     return jsonify(group.serialize()), 200
 #--------------------------------------------------------------------------------------------------
 # 9) Update a Group name UPDATE /group/{group_id} FALTA!!!
-@api.route('/group/<int:id>', methods=['PUT']) 
-def update_group(id):    
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
+@api.route('/group/<int:group_id>', methods=['PUT']) 
+def update_group(group_id):    
+    body = request.get_json()
+    group = Group.query.get(group_id)
+    group.name = body['name']
+    db.session.commit()
+    print(group)
 
-    return jsonify(response_body), 200
+    return jsonify('the group has been updated'), 200
     # return jsonify(contact.serialize()), 200
 #--------------------------------------------------------------------------------------------------
 #10) Delete a Group DELETE /group/{group_id}
